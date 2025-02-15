@@ -1,0 +1,7 @@
+# ninja log v6
+3	117	7602941238771130	CMakeFiles/GarbageCollector.dir/main.cpp.obj.ddi	87e91d8946d01abd
+117	145	7602941240164642	CMakeFiles/GarbageCollector.dir/CXX.dd	1c862ac7bd073ed1
+117	145	7602941240164642	C:/Users/akvat/Programming/GarbageCollector/cmake-build-debug/CMakeFiles/GarbageCollector.dir/CXXModules.json	1c862ac7bd073ed1
+117	145	7602941240164642	CMakeFiles/GarbageCollector.dir/main.cpp.obj.modmap	1c862ac7bd073ed1
+151	489	7602941240249503	CMakeFiles/GarbageCollector.dir/main.cpp.obj	e721bedb7d7173f7
+490	868	7602941243641492	GarbageCollector.exe	d4d7b35bf39afe7
