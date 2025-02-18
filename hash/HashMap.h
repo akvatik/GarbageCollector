@@ -14,6 +14,9 @@ constexpr double MAX_LOAD_FACTOR = 0.75;
 constexpr double MIN_LOAD_FACTOR = 0.25;
 constexpr size_t INITIAL_CAPACITY = 8;
 
+template <class T>
+class GarbageCollector;
+
 template<class K, class V>
 class HashMap {
 private:

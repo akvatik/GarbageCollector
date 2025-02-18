@@ -10,19 +10,20 @@
 #include <stdexcept>
 #include <iostream>
 
-
 template <class T>
 class Vertex {
 public:
     size_t id;
     T value;
+    size_t graphId;
     DynamicArray<Vertex<T>*> neighbours;
     bool marked;
-    //вынести вне определения вершины
-    Vertex() : id(0), value(T()), neighbours(), marked(false) {}
+
+    Vertex()
+            : id(0), value(T()), graphId(0), neighbours(), marked(false) {}
 
     Vertex(size_t id, const T& value)
-            : id(id), value(value), neighbours(), marked(false) {}
+            : id(id), value(value), graphId(0), neighbours(), marked(false) {}
 
     void addNeighbour(Vertex<T>* neighbour) {
         neighbours.add(neighbour);
@@ -50,9 +51,15 @@ template <class T>
 class OrientedGraph {
 private:
     HashMap<size_t, Vertex<T>> data;
+    size_t graphId;
+    DynamicArray<size_t> rootVertexIds;
 
 public:
-    OrientedGraph() = default;
+    OrientedGraph(size_t id = 0) : data(), graphId(id), rootVertexIds() {}
+
+    size_t getGraphId() const {
+        return graphId;
+    }
 
     bool hasVertex(size_t id) const {
         return data.containsKey(id);
@@ -66,10 +73,21 @@ public:
         return data.get(id);
     }
 
-    // Метод для получения списка ID всех вершин
     DynamicArray<size_t> getVertexIds() const {
         return data.getKeys();
     }
+
+    void addRootVertex(size_t id) {
+        if (!hasVertex(id)) {
+            throw std::runtime_error("Vertex with ID " + std::to_string(id) + " not found!");
+        }
+        rootVertexIds.add(id);
+    }
+
+    const DynamicArray<size_t>& getRootVertices() const {
+        return rootVertexIds;
+    }
+
     void addEdge(size_t from, size_t to) {
         Vertex<T>& fromVertex = data.get(from);
         Vertex<T>& toVertex = data.get(to);
@@ -83,11 +101,21 @@ public:
     }
 
     void deleteVertex(size_t id) {
+        if (!hasVertex(id)) {
+            std::cout << "Vertex with ID " << id << " not found!" << std::endl;
+            return;
+        }
         DynamicArray<size_t> keys = data.getKeys();
         for (size_t i = 0; i < keys.size(); ++i) {
-            data.get(keys[i]).removeNeighbour(&data.get(id));
+            Vertex<T>& vertex = data.get(keys.get(i));
+            vertex.removeNeighbour(&data.get(id));
         }
+        Vertex<T>* vertexToDelete = &data.get(id);
+
+        GarbageCollector<T>::untrack(vertexToDelete);
+
         data.remove(id);
+        std::cout << "Vertex with ID " << id << " deleted" << std::endl;
     }
 
     void addVertex(size_t id, const T& value) {
@@ -95,10 +123,12 @@ public:
             throw std::invalid_argument("Vertex with ID " + std::to_string(id) + " already exists!");
         }
         Vertex<T> new_vertex(id, value);
+        new_vertex.graphId = graphId;
         data.put(id, new_vertex);
+
+        Vertex<T>* trackVertex = &data.get(id);
+        GarbageCollector<T>::track(trackVertex);
     }
-
-
 
     void setVertexData(size_t id, T newData) {
         if (hasVertex(id)) {
@@ -108,8 +138,7 @@ public:
         }
     }
 
-
-    DynamicArray<Vertex<T>> getAllVertices() const{
+    DynamicArray<Vertex<T>> getAllVertices() const {
         DynamicArray<Vertex<T>> result;
         DynamicArray<size_t> keys = data.getKeys();
         for (size_t i = 0; i < keys.size(); ++i) {
@@ -117,7 +146,6 @@ public:
         }
         return result;
     }
-
 
     DynamicArray<Vertex<T>*> getNeighbours(size_t from) {
         if (!hasVertex(from)) {
@@ -127,5 +155,5 @@ public:
     }
 };
 
+#endif // GARBAGECOLLECTOR_GRAPH_H
 
-#endif //GARBAGECOLLECTOR_GRAPH_H
