@@ -1,14 +1,17 @@
-#include "test/TestGarbageCollector.h"
+#include <iostream>
+#include <cassert>
+#include "memory/Graph.h"  // Подключите файл с вашим графом и сборщиком мусора
+#include "memory/GarbageCollector_t.h"
+
+
+
+#include "test/Functional_testsGC.h"
+#include "test/Load_testsGC.h"
 
 
 int main() {
-    testBasic();
-    testAllReachable();
-    testNoRoot();
-    testCycle();
-    testMultipleGraphs();
-    testMarkReset();
-
+    runFunctionalTests();
+    runLoadTests();
     return 0;
 }
 

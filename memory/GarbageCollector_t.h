@@ -37,16 +37,21 @@ public:
     void mark(OrientedGraph<T>& graph) {
         std::stack<void*> toVisit;
 
-        std::cout << "Marking reachable objects..." << std::endl;
+        /* std::cout << "Marking reachable objects..." << std::endl; */
 
         const DynamicArray<size_t>& roots = graph.getRootVertices();
+
+        if (roots.size() == 0) {
+            return;
+        }
+
         for (size_t i = 0; i < roots.size(); ++i) {
             size_t rootId = roots.get(i);
             Vertex<T>* vertex = &graph.getVertex(rootId);
             if (vertex && !vertex->marked) {
                 toVisit.push(vertex);
                 vertex->mark();
-                std::cout << "Marked root vertex with ID: " << vertex->id << std::endl;
+                /* std::cout << "Marked root vertex with ID: " << vertex->id << std::endl; */
             }
         }
 
@@ -55,21 +60,21 @@ public:
             toVisit.pop();
 
             Vertex<T>* currentVertex = static_cast<Vertex<T>*>(currentObject);
-            std::cout << "Visiting vertex ID: " << currentVertex->id << std::endl;
+           /*  std::cout << "Visiting vertex ID: " << currentVertex->id << std::endl; */
 
             for (size_t i = 0; i < currentVertex->neighbours.size(); ++i) {
                 Vertex<T>* neighbour = currentVertex->neighbours.get(i);
                 if (!neighbour->marked) {
                     neighbour->mark();
                     toVisit.push(neighbour);
-                    std::cout << "Marked neighbour vertex ID: " << neighbour->id << std::endl;
+                    /* std::cout << "Marked neighbour vertex ID: " << neighbour->id << std::endl; */
                 }
             }
         }
     }
 
     void sweep(OrientedGraph<T>& graph) {
-        std::cout << "Sweeping unreachable objects..." << std::endl;
+        /* std::cout << "Sweeping unreachable objects..." << std::endl; */
 
         size_t trackedSize = trackedObjects.size();
         DynamicArray<Vertex<T>*> toDelete;
@@ -86,7 +91,6 @@ public:
 
         for (size_t i = 0; i < toDelete.size(); ++i) {
             Vertex<T>* vertex = toDelete.get(i);
-            std::cout << "Deleting vertex with ID: " << vertex->id << std::endl;
             graph.deleteVertex(vertex->id);
 
             size_t indexToRemove = static_cast<size_t>(-1);
@@ -99,8 +103,8 @@ public:
             if (indexToRemove != static_cast<size_t>(-1)) {
                 trackedObjects.removeAt(indexToRemove);
             }
-            std::cout << "Size of tracked objects after deletion: " << trackedObjects.size() << std::endl;
         }
+        /* std::cout << "Size of tracked objects after deletion: " << trackedObjects.size() << std::endl; */
         DynamicArray<size_t> remainingVertices = graph.getVertexIds();
         for (size_t i = 0; i < remainingVertices.size(); ++i) {
             graph.getVertex(remainingVertices.get(i)).unmark();

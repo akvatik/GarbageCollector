@@ -102,9 +102,15 @@ public:
 
     void deleteVertex(size_t id) {
         if (!hasVertex(id)) {
-            std::cout << "Vertex with ID " << id << " not found!" << std::endl;
+            throw std::runtime_error("Vertex with ID " + std::to_string(id) + " not found!");   
             return;
         }
+        for (size_t i = 0; i < rootVertexIds.size(); ++i) {
+        if (rootVertexIds.get(i) == id) {
+            rootVertexIds.removeAt(i);
+            break;
+        }
+    }
         DynamicArray<size_t> keys = data.getKeys();
         for (size_t i = 0; i < keys.size(); ++i) {
             Vertex<T>& vertex = data.get(keys.get(i));
@@ -115,7 +121,6 @@ public:
         GarbageCollector<T>::untrack(vertexToDelete);
 
         data.remove(id);
-        std::cout << "Vertex with ID " << id << " deleted" << std::endl;
     }
 
     void addVertex(size_t id, const T& value) {

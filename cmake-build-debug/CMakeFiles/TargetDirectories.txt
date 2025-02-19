@@ -1,3 +1,0 @@
-C:/Users/akvat/Programming/GarbageCollector/cmake-build-debug/CMakeFiles/GarbageCollector.dir
-C:/Users/akvat/Programming/GarbageCollector/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/akvat/Programming/GarbageCollector/cmake-build-debug/CMakeFiles/rebuild_cache.dir
